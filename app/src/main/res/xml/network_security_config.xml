@@ -13,5 +13,4 @@
             <certificates src="user" />
         </trust-anchors>
     </debug-overrides>
-
 </network-security-config>

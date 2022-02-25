@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">android_jetpack_paging_library</string>
+    <string name="app_name">Paging Library Sample</string>
     <string name="search_hint">Enter Book Name</string>
     <string name="no_results">No Results</string>
     <string name="title">Title</string>

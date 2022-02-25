@@ -11,19 +11,15 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
-class NewsViewModel @Inject constructor(private val newRepo: NewsRepo) : ViewModel(){
+class NewsViewModel @Inject constructor(private val newRepo: NewsRepo) : ViewModel() {
 
     val loader = MutableLiveData<Boolean>()
 
-    val newsListLiveData = liveData{
+    val newsListLiveData = liveData<Result<List<Article>>> {
         loader.postValue(true)
         emitSource(newRepo.fetchNews()
             .onEach {
                 loader.postValue(false)
-            }.flatMapMerge{
-                flow{
-                    it.getOrNull()?.let { it1 -> emit(it1.articles) }
-                }
             }
             .asLiveData())
     }

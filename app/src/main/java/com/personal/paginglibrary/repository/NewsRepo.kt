@@ -1,5 +1,6 @@
 package com.personal.paginglibrary.repository
 
+import com.personal.paginglibrary.model.Article
 import com.personal.paginglibrary.model.NewsApiResponse
 import com.personal.paginglibrary.model.QueryPath
 import com.personal.paginglibrary.network.OpenNewsAPI
@@ -13,7 +14,7 @@ import javax.inject.Inject
 
 class NewsRepo @Inject constructor(private val openNewsAPI: OpenNewsAPI) {
 
-    suspend fun  fetchNews(): Flow<Result<NewsApiResponse>> {
+    suspend fun fetchNews(): Flow<Result<List<Article>>> {
         val queryPath = QueryPath("tata", apikey = AppConstant.API_KEY)
         return flow {
             emit(
@@ -23,11 +24,11 @@ class NewsRepo @Inject constructor(private val openNewsAPI: OpenNewsAPI) {
                         queryPath.searchTitle,
                         queryPath.page,
                         queryPath.apikey
-                    )
+                    ).articles
                 )
             )
-        }.catch {
-            emit(Result.failure(RuntimeException("Something went wrong")))
+        }.catch { exception ->
+            emit(Result.failure(RuntimeException(exception.message)));
         }
     }
 }

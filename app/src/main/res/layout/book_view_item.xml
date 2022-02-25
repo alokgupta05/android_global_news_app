@@ -18,32 +18,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="android-architecture"/>
 
-    <TextView
-        android:id="@+id/repo_description"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:maxLines="10"
-        android:paddingVertical="@dimen/margin_vertical"
-        android:textColor="?android:textColorPrimary"
-        android:textSize="@dimen/repo_description_size"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/repo_name"
-        tools:ignore="UnusedAttribute"
-        tools:text="A collection of samples to discuss and showcase different architectural tools and patterns for Android apps."/>
-
-    <TextView
-        android:id="@+id/book_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:paddingVertical="@dimen/margin_vertical"
-        android:text="@string/title"
-        android:textSize="@dimen/repo_description_size"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/repo_description"
-        tools:ignore="RtlCompat"/>
-
     <ImageView
         android:id="@+id/star"
         android:layout_width="0dp"
@@ -72,6 +46,5 @@
         android:paddingVertical="@dimen/margin_vertical"
         android:textSize="@dimen/repo_description_size"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/repo_description"
         tools:text="30"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

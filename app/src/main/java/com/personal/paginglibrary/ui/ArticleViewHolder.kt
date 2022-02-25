@@ -14,9 +14,6 @@ import com.personal.paginglibrary.model.Article
  */
 class ArticleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val name: TextView = view.findViewById(R.id.repo_name)
-    private val description: TextView = view.findViewById(R.id.repo_description)
-    private val stars: TextView = view.findViewById(R.id.repo_stars)
-    private val forks: TextView = view.findViewById(R.id.repo_forks)
 
     private var article: Article? = null
 
@@ -24,9 +21,6 @@ class ArticleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         if (repo == null) {
             val resources = itemView.resources
             name.text = resources.getString(R.string.loading)
-            description.visibility = View.GONE
-            stars.text = resources.getString(R.string.unknown)
-            forks.text = resources.getString(R.string.unknown)
         } else {
             showRepoData(repo)
         }
@@ -35,14 +29,6 @@ class ArticleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private fun showRepoData(article: Article) {
         this.article = article
         name.text = article.title
-
-        // if the description is missing, hide the TextView
-        var descriptionVisibility = View.GONE
-        if (TextUtils.isEmpty(article.description)) {
-            description.text = article.description
-            descriptionVisibility = View.VISIBLE
-        }
-        description.visibility = descriptionVisibility
 
     }
 

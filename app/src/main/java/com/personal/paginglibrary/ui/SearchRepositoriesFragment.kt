@@ -32,31 +32,35 @@ class SearchRepositoriesFragment : Fragment() {
     lateinit var viewModelFactory: NewsViewModelFactory
 
     @Inject
-    @ApplicationContext lateinit var appContext: Context
+    @ApplicationContext
+    lateinit var appContext: Context
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val binding = FragmentSearchBookBinding.inflate(inflater, container, false)
 
         setupViewModel()
         setupList(binding.list, mutableListOf())
 
         viewModel.loader.observe(viewLifecycleOwner, { loading ->
-            when(loading) {
+            when (loading) {
                 true -> binding.loader.visibility = View.VISIBLE
                 else -> binding.loader.visibility = View.GONE
             }
         })
 
-        setupList(binding.list, mutableListOf())
-
-        viewModel.newsListLiveData.observe(viewLifecycleOwner, { newLiveData ->
-            if(newLiveData !=null) {
-                setupList(binding.list, newLiveData)
-                Toast.makeText(appContext, "Success", Toast.LENGTH_LONG).show()
-            }
-            else {
-                Toast.makeText(appContext,"Error", Toast.LENGTH_LONG).show()
+        viewModel.newsListLiveData.observe(viewLifecycleOwner, { result ->
+            val listArticle = result.getOrNull()
+            if (result.isSuccess && listArticle != null) {
+                setupList(binding.list, listArticle)
+            } else {
+                Toast.makeText(
+                    appContext,
+                    result.exceptionOrNull()?.message + "Error",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         })
 
@@ -73,7 +77,7 @@ class SearchRepositoriesFragment : Fragment() {
             val decoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
             this.addItemDecoration(decoration)
             val adapterList = ArticleAdapter()
-            adapter=  adapterList
+            adapter = adapterList
             adapterList.submitList(listArticle)
         }
     }
