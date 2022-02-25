@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">android_jetpack_paging_library</string>
+    <string name="search_hint">Enter Book Name</string>
+    <string name="no_results">No Results</string>
+    <string name="title">Title</string>
+    <string name="loading">loading</string>
+    <string name="unknown">unknown</string>
+</resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_vertical">20dp</dimen>
+    <dimen name="repo_name_size">18sp</dimen>
+    <dimen name="margin_horizontal">18sp</dimen>
+    <dimen name="repo_description_size">18sp</dimen>
+</resources>
