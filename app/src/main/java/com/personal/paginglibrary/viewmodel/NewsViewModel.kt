@@ -5,23 +5,31 @@ import com.personal.paginglibrary.model.Article
 import com.personal.paginglibrary.model.NewsApiResponse
 import com.personal.paginglibrary.repository.NewsRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.flatMapMerge
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import java.lang.RuntimeException
 import javax.inject.Inject
 
 @HiltViewModel
 class NewsViewModel @Inject constructor(private val newRepo: NewsRepo) : ViewModel() {
 
-    val loader = MutableLiveData<Boolean>()
+    val loader = MutableLiveData(false)
 
-    val newsListLiveData = liveData<Result<List<Article>>> {
-        loader.postValue(true)
-        emitSource(newRepo.fetchNews()
+    val newsListLiveData = flow<Result<List<Article>>> {
+        loader.value = true
+        newRepo.fetchNews()
             .onEach {
-                loader.postValue(false)
+                loader.value = false
             }
-            .asLiveData())
+            .collect{
+                if(it.isSuccess){
+                    val articles = it.getOrNull()?: emptyList()
+                    emit(Result.success(articles))
+                }else{
+                    val articles = it.exceptionOrNull()?: RuntimeException("Something went wrong")
+                    emit(Result.failure(articles))
+                }
+            }
     }
 
 }

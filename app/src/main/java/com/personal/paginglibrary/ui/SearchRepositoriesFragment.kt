@@ -7,8 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +18,11 @@ import com.personal.paginglibrary.viewmodel.NewsViewModel
 import com.personal.paginglibrary.viewmodel.NewsViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -38,33 +42,38 @@ class SearchRepositoriesFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = FragmentSearchBookBinding.inflate(inflater, container, false)
 
         setupViewModel()
         setupList(binding.list, mutableListOf())
 
-        viewModel.loader.observe(viewLifecycleOwner, { loading ->
-            when (loading) {
-                true -> binding.loader.visibility = View.VISIBLE
-                else -> binding.loader.visibility = View.GONE
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.newsListLiveData.collect {
+                    val listArticle = it.getOrNull()
+                    if (it.isSuccess && listArticle != null) {
+                        setupList(binding.list, listArticle)
+                    } else {
+                        Toast.makeText(
+                            appContext,
+                            it.exceptionOrNull()?.message + "Error",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
             }
-        })
+            viewModel.loader.observe(viewLifecycleOwner, {
+                when (it) {
+                    true -> binding.loader.visibility = View.VISIBLE
+                    else -> binding.loader.visibility = View.GONE
+                }
+            })
 
-        viewModel.newsListLiveData.observe(viewLifecycleOwner, { result ->
-            val listArticle = result.getOrNull()
-            if (result.isSuccess && listArticle != null) {
-                setupList(binding.list, listArticle)
-            } else {
-                Toast.makeText(
-                    appContext,
-                    result.exceptionOrNull()?.message + "Error",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        })
+        }
 
         return binding.root
+
     }
 
     private fun setupList(
